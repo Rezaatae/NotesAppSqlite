@@ -1,5 +1,6 @@
 package com.example.notessqlite
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -8,7 +9,7 @@ class NotesDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
     companion object{
         private const val DATABASE_NAME = "notesapp.db"
-        private const val DATABASE_VERSION = "1"
+        private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "allnotes"
         private const val COLUMN_ID = "id"
         private const val COLUMN_TITLE = "title"
@@ -24,5 +25,15 @@ class NotesDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_NAME"
         db?.execSQL(dropTableQuery)
         onCreate(db)
+    }
+
+    fun insertNote(note: Note){
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_TITLE, note.title)
+            put(COLUMN_CONTENT, note.content)
+        }
+        db.insert(TABLE_NAME, null, values)
+        db.close()
     }
 }
